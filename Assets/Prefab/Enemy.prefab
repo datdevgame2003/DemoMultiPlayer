@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 746532820504560224}
   - component: {fileID: 446915797040041698}
   - component: {fileID: 2247354783707824389}
-  - component: {fileID: 5109857685552720560}
+  - component: {fileID: 3236343110658740955}
+  - component: {fileID: 7109019015743197930}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -31,8 +32,8 @@ Transform:
   m_GameObject: {fileID: 1366271968119142182}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.03, y: -1.1219512, z: 0}
-  m_LocalScale: {x: 6.5, y: 7, z: 6.5}
+  m_LocalPosition: {x: 8.0585, y: 0.57, z: 0}
+  m_LocalScale: {x: 7, y: 7, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -121,7 +122,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.00949347, y: 0.0095228255}
+  m_Offset: {x: -0.00949347, y: 0.011363141}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -132,7 +133,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.32797384, y: 0.31752586}
+  m_Size: {x: 0.32797384, y: 0.27703863}
   m_EdgeRadius: 0
 --- !u!114 &746532820504560224
 MonoBehaviour:
@@ -188,8 +189,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d77211a602241aa448f03c7e74b46142, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 2
---- !u!50 &5109857685552720560
+  movementSpeed: 3
+  maxHealth: 100
+  HitEffectPrefab: {fileID: 2708598583397607911, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
+--- !u!50 &3236343110658740955
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -215,4 +218,18 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 0
+--- !u!114 &7109019015743197930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366271968119142182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b9b487bd5b72434eb5626149a101b0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  ExplosionPrefab: {fileID: 8791802859087666345, guid: ae07f2a45f14a82428409cfe410e6002, type: 3}

@@ -1,78 +1,99 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Unity.Netcode;
 using UnityEngine;
-using Unity.Netcode;
 
 public class EnemyController : NetworkBehaviour
 {
     [SerializeField] private float movementSpeed = 2f;
+    [SerializeField] private int maxHealth = 100;  // Máu tối đa
+    private int currentHealth;
+    private Rigidbody2D rb;
+    [SerializeField]
+    GameObject HitEffectPrefab;
     private Transform target;
-
+ 
+    public static event System.Action OnEnemyKilled;
     void Start()
     {
-        if (!IsServer) // Chỉ Server xử lý logic tìm mục tiêu
+        rb = GetComponent<Rigidbody2D>();
+        currentHealth = maxHealth;  // Khởi tạo máu
+        if (!IsOwner)
         {
             return;
         }
 
-        // Tìm tất cả các Player trong game
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        if (players.Length > 0)
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
         {
-            target = GetClosestPlayer(players).transform; // Chọn mục tiêu gần nhất
+            target = player.transform;
         }
     }
 
     void Update()
     {
-        if (!IsServer) // Chỉ Server điều khiển Enemy
+        if (!IsOwner)
         {
             return;
         }
 
         if (target != null)
         {
-            MoveTowardsTarget();
+            Vector3 direction = target.position - transform.position;
+            direction.Normalize();
+            transform.Translate(direction * movementSpeed * Time.deltaTime, Space.World);
+           
+        }
+    }
+   
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Bullet"))
+        {
+            Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
+            TakeDamage(10);  
         }
     }
 
-    private void MoveTowardsTarget()
+    // Hàm giảm máu
+    void TakeDamage(int damage)
     {
-        Vector3 direction = target.position - transform.position;
-        direction.Normalize();
-        transform.Translate(direction * movementSpeed * Time.deltaTime, Space.World);
-
-        // Gửi vị trí mới đến Client
-        UpdatePositionClientRpc(transform.position);
-    }
-
-    // ClientRpc: Đồng bộ vị trí từ Server đến Client
-    [ClientRpc]
-    private void UpdatePositionClientRpc(Vector3 newPosition)
-    {
-        if (IsServer) // Server không cần cập nhật từ ClientRpc
+        if (!IsOwner)
         {
             return;
         }
 
-        transform.position = newPosition;
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Giới hạn máu trong khoảng 0 - max
+
+        
+        UpdateHealthServerRpc(currentHealth);
+
+      
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 
-    private GameObject GetClosestPlayer(GameObject[] players)
+   
+    void Die()
     {
-        GameObject closest = null;
-        float minDistance = Mathf.Infinity;
+        OnEnemyKilled?.Invoke();
+        Destroy(gameObject);
+    }
 
-        foreach (GameObject player in players)
-        {
-            float distance = Vector3.Distance(transform.position, player.transform.position);
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                closest = player;
-            }
-        }
+   
+    [ServerRpc]
+    private void UpdateHealthServerRpc(int newHealth)
+    {
+        currentHealth = newHealth;
+        UpdateHealthClientRpc(newHealth);
+    }
 
-        return closest;
+   
+    [ClientRpc]
+    private void UpdateHealthClientRpc(int newHealth)
+    {
+        
     }
 }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ground
   - Enemy
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -43,6 +44,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: bullet
+  - name: Bullet
     uniqueID: 4043382357
+    locked: 0
+  - name: Enemy
+    uniqueID: 3129387753
     locked: 0

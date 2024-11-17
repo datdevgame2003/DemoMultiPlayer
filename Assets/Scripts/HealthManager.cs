@@ -5,61 +5,90 @@ using UnityEngine.UI;
 
 public class HealthManager : NetworkBehaviour
 {
-    public Slider healthSlider;
-    public float maxHealth = 100f;
-    private float currentHealth;
-
-    // Cập nhật khi mất máu
-    public void TakeDamage(float damage)
-    {
-        if (!IsOwner) return; // Chỉ giảm máu cho owner
-
-        currentHealth -= damage;
-
-        // Cập nhật thanh máu
-        healthSlider.value = currentHealth / maxHealth;
-
-        // Nếu máu <= 0, bạn có thể thực hiện hành động như chết
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-
-        // Đồng bộ lại máu cho tất cả các client
-        UpdateHealthServerRpc(currentHealth);
-    }
-
-    // ServerRpc để đồng bộ hóa máu
-    [ServerRpc]
-    void UpdateHealthServerRpc(float newHealth)
-    {
-        currentHealth = newHealth;
-        UpdateHealthClientRpc(currentHealth);
-    }
-
-    // ClientRpc để đồng bộ hóa máu cho tất cả client
-    [ClientRpc]
-    void UpdateHealthClientRpc(float newHealth)
-    {
-        if (!IsOwner)
-        {
-            currentHealth = newHealth;
-            healthSlider.value = currentHealth / maxHealth;
-        }
-    }
-
-    void Die()
-    {
-        // Thực hiện hành động khi player chết (tắt nhân vật, respawn, v.v.)
-        Debug.Log("Player died!");
-    }
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private int maxHealth = 100; 
+    private NetworkVariable<int> currentHealth = new NetworkVariable<int>(100); // NetworkVariable để đồng bộ máu
+    [SerializeField]
+    GameObject ExplosionPrefab;
+   
+   
+    [SerializeField] private GameObject gameOverUI;
 
     private void Start()
     {
-        currentHealth = maxHealth;
-        if (healthSlider != null)
+        if (IsOwner)
         {
-            healthSlider.value = currentHealth / maxHealth;
+            currentHealth.Value = maxHealth; 
+        }
+
+        healthSlider.maxValue = maxHealth; 
+        healthSlider.value = currentHealth.Value;
+        gameOverUI = GameObject.Find("GameOverCanvas");
+            if (gameOverUI != null)
+            {
+                gameOverUI.SetActive(false);
+            }
+        }
+    
+
+    private void Update()
+    {
+        if (IsOwner)
+        {
+            healthSlider.value = currentHealth.Value; 
         }
     }
+
+    public void TakeDamage(int damage)
+    {
+        if (!IsOwner) return;
+
+        currentHealth.Value -= damage;
+        if(currentHealth.Value <= 0)
+        {
+            Die();
+           
+        }
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth); // Giới hạn trong khoảng 0 - max
+
+        // Goi ServerRpc đe đong bo lai mau tren server
+        UpdateHealthServerRpc(currentHealth.Value);
+    }
+    void Die()
+    {
+        if (gameOverUI != null)
+        {
+            gameOverUI.SetActive(true);
+        }
+        Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+        Destroy(gameObject);
+       
+    }
+
+    public void Heal(int amount)
+    {
+        if (!IsOwner) return;
+
+        currentHealth.Value += amount;
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth); // Giới hạn trong khoảng 0 - max
+
+        // Goi ServerRpc đe đong bo lai mau tren server
+        UpdateHealthServerRpc(currentHealth.Value);
+    }
+
+    // ServerRpc:update health client->server
+    [ServerRpc]
+    private void UpdateHealthServerRpc(int newHealth)
+    {
+        currentHealth.Value = newHealth;
+        UpdateHealthClientRpc(newHealth);
+    }
+
+    // ClientRpc :update health -> client 
+    [ClientRpc]
+    private void UpdateHealthClientRpc(int newHealth)
+    {
+        healthSlider.value = newHealth; // Cập nhật thanh máu trên các client khác
+    }
+  
 }

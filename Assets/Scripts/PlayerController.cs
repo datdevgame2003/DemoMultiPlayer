@@ -26,14 +26,14 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField]
     List<AudioClip> listAudios;
-   
+    
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        shootingSound = GetComponent<AudioSource>();
 
-      
     }
 
     void Update()
@@ -51,13 +51,13 @@ public class PlayerController : NetworkBehaviour
             // Nhảy
             if (Input.GetKeyDown(KeyCode.Space) && allowJump)
             {
-                RequestJumpServerRpc(); // Gửi yêu cầu nhảy lên server
+                RequestJumpServerRpc(); // jump -> server
             }
 
             // Bắn đạn
             if (Input.GetButtonDown("Fire2"))
             {
-                RequestShootServerRpc(isFacingRight); // Gửi yêu cầu bắn đến server
+                RequestShootServerRpc(isFacingRight); // shoot -> server
             }
 
             // Đồng bộ vị trí và trạng thái flip lên Server
@@ -119,7 +119,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // ServerRpc: Đồng bộ vị trí và trạng thái flip từ client lên server
+    // ServerRpc: synchonize postion, flip status client -> server
     [ServerRpc]
     void SyncPlayerPosServerRpc(Vector3 pos, bool facingRight, float move)
     {
@@ -127,11 +127,11 @@ public class PlayerController : NetworkBehaviour
         isFacingRight = facingRight;
         this.move = move;
 
-        // Sau khi đồng bộ từ client, gọi ClientRpc để cập nhật các client khác
+        // Sau khi đong bo tu client, goi ClientRpc đe cap nhat cac client khac
         SyncPlayerPosClientRpc(pos, facingRight, move);
     }
 
-    // ClientRpc: Cập nhật vị trí và trạng thái flip cho tất cả các client
+   
     [ClientRpc]
     void SyncPlayerPosClientRpc(Vector3 pos, bool facingRight, float move)
     {
@@ -145,21 +145,18 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    // ServerRpc: Đồng bộ yêu cầu bắn đạn từ client lên server
+    
     [ServerRpc(RequireOwnership = false)]
     void RequestShootServerRpc(bool facingRight)
     {
         ShootClientRpc(facingRight);
     }
 
-    // ClientRpc: Đồng bộ hành động bắn đạn cho tất cả các client
     [ClientRpc]
     void ShootClientRpc(bool facingRight)
     {
-        // Tạo viên đạn tại vị trí firePoint
+        
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-
-        // Xác định hướng bắn dựa trên facingRight
         Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
         bullet.GetComponent<BulletController>().SetDirection(shootDirection);
         shootingSound = GetComponent<AudioSource>();
@@ -168,14 +165,14 @@ public class PlayerController : NetworkBehaviour
         Destroy(bullet, 1.5f);
     }
 
-    // ServerRpc: Đồng bộ yêu cầu nhảy từ client lên server
+    
     [ServerRpc]
     void RequestJumpServerRpc()
     {
-        JumpClientRpc(); // Cập nhật nhảy cho tất cả các client
+        JumpClientRpc(); 
     }
 
-    // ClientRpc: Đồng bộ hành động nhảy cho tất cả các client
+    
     [ClientRpc]
     void JumpClientRpc()
     {

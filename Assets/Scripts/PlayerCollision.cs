@@ -1,26 +1,24 @@
-﻿using Unity.Netcode;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCollision : NetworkBehaviour
+public class PlayerCollision : MonoBehaviour
 {
-    private HealthManager healthManager;
+    [SerializeField] private HealthManager healthManager;
+    
+    [SerializeField] private int damageOnCollision = 10; 
+    [SerializeField]
+    GameObject ExplosionPrefab, HitEffectPrefab;
+    //AudioSource coinSound;
 
-    private void Start()
-    {
-        // Lấy component HealthManager của Player
-        healthManager = GetComponent<HealthManager>();
-    }
-
+    [SerializeField]
+    List<AudioClip> listAudios;
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            // Nếu va chạm với enemy, giảm máu
-            float damage = 10f; // Mức độ sát thương có thể thay đổi
-            if (healthManager != null)
-            {
-                healthManager.TakeDamage(damage); // Gọi phương thức giảm máu
-            }
+            Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
+            healthManager.TakeDamage(damageOnCollision);
+            
         }
     }
 }

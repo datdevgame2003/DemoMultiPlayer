@@ -6,16 +6,16 @@ using Unity.Netcode;
 
 public class EnemySpawner : NetworkBehaviour
 {
-    [SerializeField] private GameObject enemyPrefab;  // Prefab của Enemy
-    [SerializeField] private List<Transform> spawnPoints;  // Các điểm spawn ngẫu nhiên
-    [SerializeField] private float spawnInterval = 2f;  // Thời gian giữa mỗi lần spawn kẻ thù
+    [SerializeField] private GameObject enemyPrefab;  
+    [SerializeField] private List<Transform> spawnPoints;  
+    [SerializeField] private float spawnInterval = 2f;  
     private float timeSinceLastSpawn;
 
     void Start()
     {
         if (IsServer)
         {
-            timeSinceLastSpawn = spawnInterval; // Khởi tạo thời gian spawn
+            timeSinceLastSpawn = spawnInterval; 
         }
     }
 
@@ -44,6 +44,14 @@ public class EnemySpawner : NetworkBehaviour
 
         GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
         NetworkObject networkObject = enemy.GetComponent<NetworkObject>();
-        networkObject.Spawn(); // Spawn trên mạng
+        if (networkObject != null)
+        {
+            networkObject.Spawn(); // Đồng bộ hóa đối tượng với client
+        }
+        else
+        {
+            Debug.LogError("Prefab cua Enemy khong co NetworkObject!");
+        }
+       
     }
 }

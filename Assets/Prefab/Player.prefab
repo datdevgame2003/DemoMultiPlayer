@@ -749,7 +749,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.97735846, g: 0.9128159, b: 0.9194641, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -846,8 +846,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4263670625
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 2603767857
+  InScenePlacedSourceGlobalObjectIdHash: 730913893
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -1120,6 +1120,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 3840639842313315671}
   maxHealth: 100
+  ExplosionPrefab: {fileID: 8791802859087666345, guid: ae07f2a45f14a82428409cfe410e6002, type: 3}
+  gameoverOj: {fileID: 0}
 --- !u!114 &8795141623706889735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1134,6 +1136,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthManager: {fileID: 990129088080359601}
   damageOnCollision: 10
+  ExplosionPrefab: {fileID: 8791802859087666345, guid: ae07f2a45f14a82428409cfe410e6002, type: 3}
+  HitEffectPrefab: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
+  listAudios: []
 --- !u!1 &7883743588941882076
 GameObject:
   m_ObjectHideFlags: 0

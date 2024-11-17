@@ -12,7 +12,7 @@ public class EnemyHealth : NetworkBehaviour
         currentHealth = maxHealth;
     }
 
-    // Phương thức giảm máu
+    // giảm máu
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;

@@ -17,17 +17,17 @@ public class BulletController : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Kiểm tra xem đối tượng va chạm có phải là kẻ thù không
+       
         if (other.CompareTag("Enemy"))
         {
-            // Truy cập script EnemyHealth và gọi phương thức TakeDamage()
+           
             EnemyHealth enemyHealth = other.GetComponent<EnemyHealth>();
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(10);  // Gọi hàm giảm máu của enemy
+                enemyHealth.TakeDamage(10);  
             }
 
-            // Hủy bullet sau khi va chạm
+           
             Destroy(gameObject);
         }
     }

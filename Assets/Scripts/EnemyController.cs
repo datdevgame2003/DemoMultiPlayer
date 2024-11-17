@@ -11,7 +11,7 @@ public class EnemyController : NetworkBehaviour
     GameObject HitEffectPrefab;
     private Transform target;
  
-    public static event System.Action OnEnemyKilled;
+   
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -78,7 +78,7 @@ public class EnemyController : NetworkBehaviour
    
     void Die()
     {
-        OnEnemyKilled?.Invoke();
+        
         Destroy(gameObject);
     }
 

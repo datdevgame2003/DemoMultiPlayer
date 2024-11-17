@@ -1,70 +1,70 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using TMPro;
+//using UnityEngine.SceneManagement;
+//using TMPro;
    
-public class GameManager : MonoBehaviour
-{
-    public static GameManager Instance;
+//public class GameManager : MonoBehaviour
+//{
+//    public static GameManager Instance;
 
-    public TextMeshProUGUI winText;
-    public GameObject gameWinUI;
-    private int enemyKillCount = 0; 
-    private const int enemiesToWin = 25; 
+//    public TextMeshProUGUI winText;
+//    public GameObject gameWinUI;
+//    private int enemyKillCount = 0; 
+//    private const int enemiesToWin = 25; 
 
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+//    void Awake()
+//    {
+//        if (Instance == null)
+//        {
+//            Instance = this;
+//        }
+//        else
+//        {
+//            Destroy(gameObject);
+//        }
+//    }
 
-    void OnEnable()
-    {
+//    void OnEnable()
+//    {
         
-        EnemyController.OnEnemyKilled += HandleEnemyKilled;
-    }
+//        EnemyController.OnEnemyKilled += HandleEnemyKilled;
+//    }
 
-    void OnDisable()
-    {
+//    void OnDisable()
+//    {
         
-        EnemyController.OnEnemyKilled -= HandleEnemyKilled;
-    }
+//        EnemyController.OnEnemyKilled -= HandleEnemyKilled;
+//    }
 
    
-    private void HandleEnemyKilled()
-    {
-        enemyKillCount++; 
+//    private void HandleEnemyKilled()
+//    {
+//        enemyKillCount++; 
 
-        if (enemyKillCount >= enemiesToWin)
-        {
-            WinGame();
-        }
-    }
+//        if (enemyKillCount >= enemiesToWin)
+//        {
+//            WinGame();
+//        }
+//    }
 
    
-    private void WinGame()
-    {
+//    private void WinGame()
+//    {
        
-        gameWinUI.SetActive(true);
-        winText.text = "Win!"; 
+//        gameWinUI.SetActive(true);
+//        winText.text = "Win!"; 
 
         
-        Time.timeScale = 0;
-    }
+//        Time.timeScale = 0;
+//    }
 
   
-    public void RestartGame()
-    {
+//    public void RestartGame()
+//    {
         
-        SceneManager.LoadScene("Menu"); 
-    }
-}
+//        SceneManager.LoadScene("Menu"); 
+//    }
+//}
 
 

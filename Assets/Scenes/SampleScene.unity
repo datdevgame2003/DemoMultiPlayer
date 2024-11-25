@@ -2808,7 +2808,7 @@ GameObject:
   - component: {fileID: 1795275501}
   - component: {fileID: 1795275502}
   m_Layer: 5
-  m_Name: GameWinText
+  m_Name: EnemyKilledText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -8,8 +8,9 @@ public class EnemyHealth : NetworkBehaviour
     [SerializeField]
     GameObject ExplosionPrefab;
     void Start()
-    {
-        currentHealth = maxHealth;
+    {  
+         currentHealth = maxHealth;
+        
     }
 
     // giảm máu

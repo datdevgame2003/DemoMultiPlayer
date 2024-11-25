@@ -24,6 +24,6 @@ public class GameOver : MonoBehaviour
         buttonSource.clip = buttonClip;
         gameOverSource.clip = gameoverClip;
         gameOverSource.Play();
-       
+
     }
 }

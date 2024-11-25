@@ -78,7 +78,10 @@ public class EnemyController : NetworkBehaviour
    
     void Die()
     {
-        
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.EnemyKilled();
+        }
         Destroy(gameObject);
     }
 

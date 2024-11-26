@@ -18,10 +18,6 @@ public class UINetworkManager : MonoBehaviour
         {
             StartButtons();
         }
-        else if (!NetworkManager.Singleton.IsListening)
-        {
-            StartButtons();
-        }
         else
         {
             StatusLabels();

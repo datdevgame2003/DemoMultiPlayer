@@ -7,7 +7,7 @@ public class HealthManager : NetworkBehaviour
 {
     [SerializeField] private Slider healthSlider;
     [SerializeField] private int maxHealth = 100; 
-    private NetworkVariable<int> currentHealth = new NetworkVariable<int>(100); // NetworkVariable để đồng bộ máu
+    private NetworkVariable<int> currentHealth = new NetworkVariable<int>(100); //synchornize health
     [SerializeField]
     GameObject ExplosionPrefab;
     private void Start()
@@ -45,7 +45,7 @@ public class HealthManager : NetworkBehaviour
         }
         currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
 
-        // Goi ServerRpc đe đong bo lai mau tren server
+        //synchonize health -> server
         UpdateHealthServerRpc(currentHealth.Value);
 
 
@@ -63,9 +63,9 @@ public class HealthManager : NetworkBehaviour
         if (!IsOwner) return;
 
         currentHealth.Value += amount;
-        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth); 
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
 
-        // Goi ServerRpc đe đong bo lai mau tren server
+        // ServerRpc:synchonize health -> server
         UpdateHealthServerRpc(currentHealth.Value);
     }
 
@@ -81,7 +81,7 @@ public class HealthManager : NetworkBehaviour
     [ClientRpc]
     private void UpdateHealthClientRpc(int newHealth)
     {
-        healthSlider.value = newHealth; // Cập nhật thanh máu trên các client khác
+        healthSlider.value = newHealth; // update healthbar -> diffirent client
     }
   
 }

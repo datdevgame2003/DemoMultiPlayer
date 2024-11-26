@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.89433956, g: 0.1254902, b: 0.16078432, a: 1}
+  m_Color: {r: 0.76862746, g: 0.078431375, b: 0.13725491, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -846,7 +846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2603767857
+  GlobalObjectIdHash: 4263670625
   InScenePlacedSourceGlobalObjectIdHash: 730913893
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -1121,7 +1121,6 @@ MonoBehaviour:
   healthSlider: {fileID: 3840639842313315671}
   maxHealth: 100
   ExplosionPrefab: {fileID: 8791802859087666345, guid: ae07f2a45f14a82428409cfe410e6002, type: 3}
-  gameoverOj: {fileID: 0}
 --- !u!114 &8795141623706889735
 MonoBehaviour:
   m_ObjectHideFlags: 0

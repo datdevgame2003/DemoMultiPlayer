@@ -10,8 +10,8 @@ public class EnemyController : NetworkBehaviour
     [SerializeField]
     GameObject HitEffectPrefab;
     private Transform target;
- 
-   
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -40,17 +40,17 @@ public class EnemyController : NetworkBehaviour
             Vector3 direction = target.position - transform.position;
             direction.Normalize();
             transform.Translate(direction * movementSpeed * Time.deltaTime, Space.World);
-           
+
         }
     }
-   
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Bullet"))
         {
             Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
-            TakeDamage(10);  
+            TakeDamage(10);
         }
     }
 
@@ -65,17 +65,17 @@ public class EnemyController : NetworkBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Giới hạn máu trong khoảng 0 - max
 
-        
+
         UpdateHealthServerRpc(currentHealth);
 
-      
+
         if (currentHealth <= 0)
         {
             Die();
         }
     }
 
-   
+
     void Die()
     {
         if (GameManager.Instance != null)
@@ -85,7 +85,7 @@ public class EnemyController : NetworkBehaviour
         Destroy(gameObject);
     }
 
-   
+
     [ServerRpc]
     private void UpdateHealthServerRpc(int newHealth)
     {
@@ -93,10 +93,10 @@ public class EnemyController : NetworkBehaviour
         UpdateHealthClientRpc(newHealth);
     }
 
-   
+
     [ClientRpc]
     private void UpdateHealthClientRpc(int newHealth)
     {
-        
+
     }
 }

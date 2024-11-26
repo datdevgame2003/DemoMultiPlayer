@@ -1,27 +1,38 @@
 ﻿using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyHealth : NetworkBehaviour
 {
     [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
+    private NetworkVariable<int> currentHealth = new NetworkVariable<int>(100);
     [SerializeField]
     GameObject ExplosionPrefab;
-    void Start()
-    {  
-         currentHealth = maxHealth;
-        
+    [SerializeField] private Slider healthSlider;
+    private void Start()
+    {
+        if (IsServer)
+        {
+            currentHealth.Value = maxHealth;
+        }
+
+        healthSlider.maxValue = maxHealth;
+        healthSlider.value = currentHealth.Value;
+
+        currentHealth.OnValueChanged += OnHealthChanged;
     }
 
-    // giảm máu
+    
     public void TakeDamage(int damage)
     {
-        currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Giới hạn máu trong khoảng 0 - max
+        if (!IsServer) return;
 
-        if (currentHealth <= 0)
+        currentHealth.Value -= damage;
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
+
+        if (currentHealth.Value <= 0)
         {
-            Die();  // Kẻ thù chết
+            Die();
         }
     }
 
@@ -31,4 +42,10 @@ public class EnemyHealth : NetworkBehaviour
         Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
+   
+    private void OnHealthChanged(int oldHealth, int newHealth)
+    {
+        healthSlider.value = newHealth;
+    }
+
 }

@@ -7,10 +7,18 @@ public class UINetworkManager : MonoBehaviour
     private string ipAddress = "127.0.0.1";
     private ushort port = 7777;
 
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     void OnGUI()
     {
         GUILayout.BeginArea(new Rect(10, 10, 300, 300));
         if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
+        {
+            StartButtons();
+        }
+        else if (!NetworkManager.Singleton.IsListening)
         {
             StartButtons();
         }
@@ -41,6 +49,7 @@ public class UINetworkManager : MonoBehaviour
         }
         if (GUILayout.Button("Server"))
         {
+
             NetworkManager.Singleton.StartServer();
         }
     }
@@ -51,4 +60,5 @@ public class UINetworkManager : MonoBehaviour
         GUILayout.Label("Transport: " + NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name);
         GUILayout.Label("Mode: " + mode);
     }
+   
 }

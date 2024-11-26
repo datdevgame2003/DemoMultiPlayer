@@ -2,23 +2,24 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Unity.Netcode;
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance; // Singleton để quản lý toàn cục
+    public static GameManager Instance; // Singleton:global management
 
     [Header("UI Components")]
     public TextMeshProUGUI enemyCountText;
-    public GameObject winUI; 
+    public GameObject winUI;
     public AudioSource winSound;
-    public GameObject gameOverUI; 
+    public GameObject gameOverUI;
     public AudioSource gameOverSound;
     [Header("Game Settings")]
-    private int enemyKillCount = 0; 
-    private const int enemiesToWin = 10; 
+    private int enemyKillCount = 0;
+    private const int enemiesToWin = 10;
 
     private void Awake()
     {
-        // Thiết lập Singleton
+        // Singleton
         if (Instance == null)
         {
             Instance = this;
@@ -31,26 +32,26 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-       
+
         winUI.SetActive(false);
         gameOverUI.SetActive(false);
         UpdateEnemyCountUI();
     }
 
-    // Phương thức để tăng số lượng enemy tiêu diệt
+    // enemy kill +
     public void EnemyKilled()
     {
         enemyKillCount++;
         UpdateEnemyCountUI();
 
-        
+
         if (enemyKillCount >= enemiesToWin)
         {
             ShowWinUI();
         }
     }
 
-    
+
     private void UpdateEnemyCountUI()
     {
         if (enemyCountText != null)
@@ -59,27 +60,47 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    
+
     private void ShowWinUI()
     {
-        winUI.SetActive(true); 
-      
-        winSound.Play();
-       
+        winUI.SetActive(true);
 
-       
+        winSound.Play();
+
+
+
         Time.timeScale = 0f;
     }
 
     public void ShowGameOverUI()
     {
-        gameOverUI.SetActive(true); 
-        gameOverSound.Play(); 
-        Time.timeScale = 0f; 
+        gameOverUI.SetActive(true);
+        gameOverSound.Play();
+        Time.timeScale = 0f;
     }
     public void RestartGame()
     {
-        Time.timeScale = 1f; 
-        SceneManager.LoadScene("SampleScene"); 
+        Time.timeScale = 1f;
+        enemyKillCount = 0;
+        UpdateEnemyCountUI();
+        winUI.SetActive(false);
+        gameOverUI.SetActive(false);
+
+        if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost)
+        {
+            NetworkManager.Singleton.Shutdown(); 
+        }
+        else if (NetworkManager.Singleton.IsClient)
+        {
+            NetworkManager.Singleton.Shutdown(); 
+        }
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        var uiNetworkManager = FindObjectOfType<UINetworkManager>();
+        if (uiNetworkManager != null)
+        {
+            uiNetworkManager.gameObject.SetActive(true);
+           
+        }
     }
 }

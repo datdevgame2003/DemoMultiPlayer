@@ -15,22 +15,25 @@ public class EnemyController : NetworkBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        currentHealth = maxHealth;  // Khởi tạo máu
-        if (!IsOwner)
+       
+        currentHealth = maxHealth;  // Khoi tao mau
+                                    //if (!IsOwner)
+                                    //{
+                                    //    return;
+                                    //}
+        if (IsServer)
         {
-            return;
-        }
-
-        GameObject player = GameObject.FindWithTag("Player");
-        if (player != null)
-        {
-            target = player.transform;
+            GameObject player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+                target = player.transform;
+            }
         }
     }
 
     void Update()
     {
-        if (!IsOwner)
+        if (!IsServer)
         {
             return;
         }
@@ -57,7 +60,7 @@ public class EnemyController : NetworkBehaviour
     // Hàm giảm máu
     void TakeDamage(int damage)
     {
-        if (!IsOwner)
+        if (!IsServer)
         {
             return;
         }
@@ -97,6 +100,6 @@ public class EnemyController : NetworkBehaviour
     [ClientRpc]
     private void UpdateHealthClientRpc(int newHealth)
     {
-
+        
     }
 }

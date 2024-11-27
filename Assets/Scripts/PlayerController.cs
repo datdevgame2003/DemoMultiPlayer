@@ -32,7 +32,7 @@ public class PlayerController : NetworkBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        shootingSound = GetComponent<AudioSource>();
+        shootingSound.Stop();
 
     }
 
@@ -40,7 +40,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsOwner)
         {
-            // Di chuyển
+            // Di chuyen
             left_right = Input.GetAxis("Horizontal");
             rb.velocity = new Vector2(left_right * moveSpeed, rb.velocity.y);
             flip();
@@ -48,19 +48,19 @@ public class PlayerController : NetworkBehaviour
             move = Mathf.Abs(left_right);
             anim.SetFloat("move", move);
 
-            // Nhảy
+            // jump
             if (Input.GetKeyDown(KeyCode.Space) && allowJump)
             {
                 RequestJumpServerRpc(); // jump -> server
             }
 
-            // Bắn đạn
+            // shoot
             if (Input.GetButtonDown("Fire2"))
             {
                 RequestShootServerRpc(isFacingRight); // shoot -> server
             }
 
-            // Đồng bộ vị trí và trạng thái flip lên Server
+            // Dong bo vị trí va trang thai flip len Server
             if (NetworkManager.Singleton.IsClient)
             {
                 SyncPlayerPosServerRpc(transform.position, isFacingRight, move);
@@ -68,7 +68,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            // Nhận vị trí và trạng thái flip từ Server (cho các client)
+            // Nhan vi tri va trang thai flip tu Server (cho cac client)
             transform.position = otherPos;
             anim.SetFloat("move", move);
             flip();
@@ -159,8 +159,6 @@ public class PlayerController : NetworkBehaviour
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
         bullet.GetComponent<BulletController>().SetDirection(shootDirection);
-        shootingSound = GetComponent<AudioSource>();
-        shootingSound.clip = listAudios[0];
         shootingSound.Play();
         Destroy(bullet, 1.5f);
     }
@@ -179,7 +177,7 @@ public class PlayerController : NetworkBehaviour
         if (allowJump)
         {
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            allowJump = false; // Đặt lại allowJump sau khi nhảy để không bị nhảy liên tục
+            allowJump = false; // không bi nhay lien tuc
         }
     }
    

@@ -10,7 +10,7 @@ public class EnemySpawner : NetworkBehaviour
     [SerializeField] private List<Transform> spawnPoints;  
     [SerializeField] private float spawnInterval = 2f;  
     private float timeSinceLastSpawn;
-
+   
     void Start()
     {
         if (IsServer)
@@ -39,6 +39,7 @@ public class EnemySpawner : NetworkBehaviour
     void SpawnEnemy()
     {
         if (!IsServer) return;
+
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
 
 
@@ -51,11 +52,14 @@ public class EnemySpawner : NetworkBehaviour
         NetworkObject networkObject = enemy.GetComponent<NetworkObject>();
         if (networkObject != null)
         {
-            networkObject.Spawn(); // Đồng bộ hóa đối tượng với client
+            networkObject.Spawn(); // Đong bo hoa đoi tuong voi client
+            
+            
         }
         else
         {
             Debug.LogError("Prefab of Enemy have not NetworkObject!");
+            
         }
 
     }

@@ -22,7 +22,7 @@ public class EnemyHealth : NetworkBehaviour
         currentHealth.OnValueChanged += OnHealthChanged;
     }
 
-    
+
     public void TakeDamage(int damage)
     {
         if (!IsServer) return;
@@ -42,7 +42,7 @@ public class EnemyHealth : NetworkBehaviour
         Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
-   
+
     private void OnHealthChanged(int oldHealth, int newHealth)
     {
         healthSlider.value = newHealth;

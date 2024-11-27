@@ -20,14 +20,13 @@ public class PlayerSettings : NetworkBehaviour
     {
         if (IsServer)
         {
-            // Server gán tên cho người chơi
+            // Server gan ten cho nguoi choi
             networkPlayerName.Value = "Player: " + (OwnerClientId + 1);
         }
 
-        // Cập nhật UI hiển thị tên
+        // UI hien thi tên
         playerName.text = networkPlayerName.Value.ToString();
 
-        // Đăng ký sự kiện khi giá trị tên thay đổi
         networkPlayerName.OnValueChanged += OnPlayerNameChanged;
     }
 
@@ -38,10 +37,11 @@ public class PlayerSettings : NetworkBehaviour
 
     void Update()
     {
-        // Đảm bảo TextHolder luôn giữ hướng cố định
+        // TextHolder giu huong co đinh
         if (textHolder != null)
         {
             textHolder.transform.rotation = Quaternion.identity; // Reset rotation
+            
         }
     }
 }

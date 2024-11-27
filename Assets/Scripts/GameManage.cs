@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     [Header("Game Settings")]
     private int enemyKillCount = 0;
     private const int enemiesToWin = 10;
-
+    private GameObject player;
     private void Awake()
     {
         // Singleton
@@ -35,9 +35,21 @@ public class GameManager : MonoBehaviour
 
         winUI.SetActive(false);
         gameOverUI.SetActive(false);
+        enemyCountText.gameObject.SetActive(false);
         UpdateEnemyCountUI();
     }
+    private void Update()
+    {
+        if (player == null)
+        {
+            player = GameObject.FindWithTag("Player"); 
+        }
 
+        if (player != null && !enemyCountText.gameObject.activeSelf)
+        {
+            enemyCountText.gameObject.SetActive(true); 
+        }
+    }
     // enemy kill +
     public void EnemyKilled()
     {

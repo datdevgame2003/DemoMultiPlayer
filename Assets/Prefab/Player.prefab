@@ -785,6 +785,7 @@ GameObject:
   - component: {fileID: 873495265098724694}
   - component: {fileID: 990129088080359601}
   - component: {fileID: 8795141623706889735}
+  - component: {fileID: 4234228551576570985}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -875,9 +876,8 @@ MonoBehaviour:
   firePoint: {fileID: 6362533630359898288}
   bulletPrefab: {fileID: 1735193323515338189, guid: ce03fe4cd68d9f4419d2aec3f1d6f6ba, type: 3}
   bulletSpeed: 9
-  shootingSound: {fileID: 0}
+  shootingSound: {fileID: 4170067694185665605}
   listAudios:
-  - {fileID: 8300000, guid: d01c285e13ca1564598c4f1badfadca1, type: 3}
   - {fileID: 8300000, guid: bbd4717dae9f2904cb258b66e97cfc59, type: 3}
 --- !u!50 &3243167974936720004
 Rigidbody2D:
@@ -1138,6 +1138,18 @@ MonoBehaviour:
   ExplosionPrefab: {fileID: 8791802859087666345, guid: ae07f2a45f14a82428409cfe410e6002, type: 3}
   HitEffectPrefab: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
   listAudios: []
+--- !u!114 &4234228551576570985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7482856280685760509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a293053d2dcf15e408a740402e40369f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7883743588941882076
 GameObject:
   m_ObjectHideFlags: 0

@@ -37,14 +37,19 @@ public class EnemyHealth : NetworkBehaviour
         }
     }
 
-  
+
     void Die()
     {
         if (GameManager.Instance != null)
         {
             GameManager.Instance.EnemyKilled();
         }
-        Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+        GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+        NetworkObject networkObject = explosion.GetComponent<NetworkObject>();
+        if (networkObject != null)
+        {
+            networkObject.Spawn();
+        }
         Destroy(gameObject);
     }
 
@@ -61,10 +66,15 @@ public class EnemyHealth : NetworkBehaviour
     }
     private void HandleDeathOnClient()
     {
-        Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+        GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+        NetworkObject networkObject = explosion.GetComponent<NetworkObject>();
+        if (networkObject != null)
+        {
+            networkObject.Spawn();
+        }
         Destroy(gameObject);
     }
-   
-    
+
+
 
 }

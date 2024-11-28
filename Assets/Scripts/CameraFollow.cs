@@ -8,11 +8,11 @@ public class CameraFollow : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        // Tìm Virtual Camera trong cảnh
+        // Tim Virtual Camera
         CinemachineVirtualCamera virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
         if (virtualCamera != null)
         {
-            virtualCamera.Follow = transform; // Gán Player làm đối tượng Follow
+            virtualCamera.Follow = transform; 
         }
     }
 }

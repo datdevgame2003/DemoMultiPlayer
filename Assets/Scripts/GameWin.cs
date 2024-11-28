@@ -15,7 +15,7 @@ public class GameWin : MonoBehaviour
     {
 
         buttonSource.Play();
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("SampleScene");
 
 
     }

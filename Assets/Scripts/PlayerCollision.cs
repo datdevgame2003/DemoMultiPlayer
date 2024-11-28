@@ -17,11 +17,13 @@ public class PlayerCollision : NetworkBehaviour
        
             if (collision.gameObject.CompareTag("Enemy"))
             {
-                Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
-                healthManager.TakeDamage(damageOnCollision);
-
+            GameObject hit = Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
+            NetworkObject networkObject = hit.GetComponent<NetworkObject>();
+            if (networkObject != null)
+            {
+                networkObject.Spawn();
             }
-        
-        
+            healthManager.TakeDamage(damageOnCollision);
+            }
     }
 }

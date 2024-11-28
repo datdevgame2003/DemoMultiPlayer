@@ -38,7 +38,7 @@ public class EnemySpawner : NetworkBehaviour
 
     void SpawnEnemy()
     {
-        if (!IsServer || spawnPoints.Count == 0) return;
+        if (!IsServer) return;
 
       
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
@@ -46,14 +46,15 @@ public class EnemySpawner : NetworkBehaviour
         
         GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
 
-        
-        if (enemy.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
+
+        NetworkObject networkObject = enemy.GetComponent<NetworkObject>();
+        if (networkObject != null)
         {
-            networkObject.Spawn(); 
+            networkObject.Spawn(); // Đong bo hoa đoi tuong voi client
         }
         else
         {
-            Debug.LogError("Prefab cua Enemy khong co NetworkObject!");
+            Debug.LogError("Prefab of Enemy have not NetworkObject!");
         }
     }
 

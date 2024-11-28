@@ -4,18 +4,18 @@ using UnityEngine;
 public class EnemyController : NetworkBehaviour
 {
     [SerializeField] private float movementSpeed = 2f;
-    
-  
+
+
     private Rigidbody2D rb;
     [SerializeField]
     GameObject HitEffectPrefab;
     private Transform target;
 
 
-   private void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-       
+
         if (IsServer)
         {
             GameObject player = GameObject.FindWithTag("Player");
@@ -33,9 +33,9 @@ public class EnemyController : NetworkBehaviour
             return;
         }
 
-            Vector3 direction = target.position - transform.position;
-            direction.Normalize();
-            transform.Translate(direction * movementSpeed * Time.deltaTime, Space.World);
+        Vector3 direction = target.position - transform.position;
+        direction.Normalize();
+        transform.Translate(direction * movementSpeed * Time.deltaTime, Space.World);
 
     }
 
@@ -44,7 +44,13 @@ public class EnemyController : NetworkBehaviour
     {
         if (other.CompareTag("Bullet"))
         {
-            Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
+           
+            GameObject hit = Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
+            NetworkObject networkObject = hit.GetComponent<NetworkObject>();
+            if (networkObject != null)
+            {
+                networkObject.Spawn();
+            }
             TakeDamage(10);
         }
     }
@@ -52,7 +58,7 @@ public class EnemyController : NetworkBehaviour
     // Hàm giảm máu
     void TakeDamage(int damage)
     {
-        
+
 
         if (TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
         {
@@ -61,5 +67,5 @@ public class EnemyController : NetworkBehaviour
     }
 
 
-  
+
 }

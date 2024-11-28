@@ -15,7 +15,7 @@ public class GameOver : MonoBehaviour
     {
 
         buttonSource.Play();
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("SampleScene");
 
 
     }

@@ -8,7 +8,7 @@ public class BulletController : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(direction * moveSpeed * Time.deltaTime);
+        transform.Translate(direction * moveSpeed * Time.deltaTime); //ban theo huong di chuyen 
     }
 
     public void SetDirection(Vector2 newDirection)

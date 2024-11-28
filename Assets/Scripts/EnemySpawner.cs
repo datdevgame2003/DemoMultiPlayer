@@ -1,62 +1,60 @@
 ﻿
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
+using System.Collections.Generic;
 
 public class EnemySpawner : NetworkBehaviour
 {
-    [SerializeField] private GameObject enemyPrefab;  
-    [SerializeField] private List<Transform> spawnPoints;  
-    [SerializeField] private float spawnInterval = 2f;  
-    private float timeSinceLastSpawn;
-   
-    void Start()
+    [Header("Enemy Spawning Settings")]
+    [SerializeField] private GameObject enemyPrefab; 
+    [SerializeField] private List<Transform> spawnPoints;  // tham chieu diem spawn
+    [SerializeField] private float spawnInterval = 4f; //thoi gian moi lan spawn
+    [SerializeField] private int maxEnemies = 20; //so luong spawn toi da
+
+    private List<NetworkObject> activeEnemies = new List<NetworkObject>();  //danh sach enemies da spawn
+    private float spawnTimer = 0f;
+
+    private void Update()
     {
-        if (IsServer)
-        {
-            timeSinceLastSpawn = spawnInterval; 
-        }
-    }
+        if (!IsServer) return;//server spawn
 
-    void Update()
-    {
-        if (!IsServer)
-        {
-            return;
-        }
+        spawnTimer += Time.deltaTime;
 
-        timeSinceLastSpawn += Time.deltaTime;
-
-
-        if (timeSinceLastSpawn >= spawnInterval)
+        if (spawnTimer >= spawnInterval && activeEnemies.Count < maxEnemies)
         {
             SpawnEnemy();
-            timeSinceLastSpawn = 0f;
+            spawnTimer = 0f;
         }
+
+        CleanUpDestroyedEnemies();
     }
 
-    void SpawnEnemy()
+    private void SpawnEnemy()
     {
         if (!IsServer) return;
 
-      
+       //random spawn
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
 
+        // create enemy
+        GameObject enemyInstance = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+
         
-        GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
-
-
-        NetworkObject networkObject = enemy.GetComponent<NetworkObject>();
+        NetworkObject networkObject = enemyInstance.GetComponent<NetworkObject>();
         if (networkObject != null)
         {
-            networkObject.Spawn(); // Đong bo hoa đoi tuong voi client
+            networkObject.Spawn(); // Đong bo voi tat ca client
+            activeEnemies.Add(networkObject); // Them vao danh sach quan ly
         }
         else
         {
-            Debug.LogError("Prefab of Enemy have not NetworkObject!");
+            Debug.LogError("Prefab cua enemy khong co NetworkObject!");
         }
     }
 
+    private void CleanUpDestroyedEnemies()
+    {
+        
+        activeEnemies.RemoveAll(enemy => enemy == null || !enemy.gameObject.activeInHierarchy);
+    }
 }
-

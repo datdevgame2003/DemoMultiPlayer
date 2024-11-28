@@ -51,7 +51,7 @@ public class GameManager : NetworkBehaviour
     {
         if (player == null)
         {
-            player = GameObject.FindWithTag("Player");
+            player = GameObject.FindWithTag("Player"); //tim tag player
         }
 
         if (player != null && !enemyCountText.gameObject.activeSelf)
@@ -66,11 +66,11 @@ public class GameManager : NetworkBehaviour
         // Only the server can update the NetworkVariable
         if (!IsServer) return;
 
-        enemyKillCount.Value++;
+        enemyKillCount.Value++; //tang so luong enemy da kill
         UpdateEnemyCountUI();
 
         // Check if the player has won
-        if (enemyKillCount.Value >= enemiesToWin)
+        if (enemyKillCount.Value >= enemiesToWin) // kill > 20 enemies -> win
         {
             ShowWinUI();
         }
@@ -140,7 +140,7 @@ public class GameManager : NetworkBehaviour
         UpdateEnemyCountUI();
         winUI.SetActive(false);
         gameOverUI.SetActive(false);
-
+        //tat tro choi
         if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost)
         {
             NetworkManager.Singleton.Shutdown();
@@ -150,7 +150,7 @@ public class GameManager : NetworkBehaviour
             NetworkManager.Singleton.Shutdown();
         }
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //bat dau lai game va khoi tao lai thanh gia tri ban dau
         var uiNetworkManager = FindObjectOfType<UINetworkManager>();
         if (uiNetworkManager != null)
         {

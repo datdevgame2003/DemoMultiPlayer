@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UINetworkManager : MonoBehaviour
 {
-    private string ipAddress = "127.0.0.1";
+    private string ipAddress = "127.0.0.1"; //dia chi ip
     private ushort port = 7777;
 
     void Awake()

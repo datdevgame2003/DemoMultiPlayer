@@ -9,7 +9,7 @@ public class HealthManager : NetworkBehaviour
 {
     [SerializeField] private Slider healthSlider;
     [SerializeField] private int maxHealth = 100;
-    private NetworkVariable<int> currentHealth = new NetworkVariable<int>(100); //synchornize health
+    private NetworkVariable<int> currentHealth = new NetworkVariable<int>(100); //synchornize health giua server va client
     [SerializeField]
     GameObject ExplosionPrefab;
     private void Start()
@@ -54,7 +54,15 @@ public class HealthManager : NetworkBehaviour
     }
     void Die()
     {
-        Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+        GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+
+        // Get the NetworkObject component attached to the explosion prefab
+        NetworkObject networkObject = explosion.GetComponent<NetworkObject>();
+        if (networkObject != null)
+        {
+            // Spawn the effect so it gets synchronized across all clients
+            networkObject.Spawn();
+        }
         GameManager.Instance.ShowGameOverUI();
         Destroy(gameObject);
 
@@ -79,7 +87,7 @@ public class HealthManager : NetworkBehaviour
         UpdateHealthClientRpc(newHealth);
     }
 
-    // ClientRpc :update health -> client 
+    // ClientRpc :update health -> clients
     [ClientRpc]
     private void UpdateHealthClientRpc(int newHealth)
     {

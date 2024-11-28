@@ -15,15 +15,18 @@ public class PlayerCollision : NetworkBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
        
-            if (collision.gameObject.CompareTag("Enemy"))
+            if (collision.gameObject.CompareTag("Enemy")) //play va cham enemy tag enemy
             {
             GameObject hit = Instantiate(HitEffectPrefab, transform.position, Quaternion.identity);
+
+            // Get the NetworkObject component attached to the explosion prefab
             NetworkObject networkObject = hit.GetComponent<NetworkObject>();
             if (networkObject != null)
             {
-                networkObject.Spawn();
+                // Spawn the effect so it gets synchronized across all clients
+                networkObject.Spawn(); //spawn hieu ung 
             }
-            healthManager.TakeDamage(damageOnCollision);
+            healthManager.TakeDamage(damageOnCollision); //nhan dame tu enemy
             }
     }
 }

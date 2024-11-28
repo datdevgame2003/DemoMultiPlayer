@@ -340,8 +340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d77211a602241aa448f03c7e74b46142, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 2.5
-  maxHealth: 100
+  movementSpeed: 3
   HitEffectPrefab: {fileID: 2708598583397607911, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
 --- !u!50 &3236343110658740955
 Rigidbody2D:

@@ -38,29 +38,24 @@ public class EnemySpawner : NetworkBehaviour
 
     void SpawnEnemy()
     {
-        if (!IsServer) return;
+        if (!IsServer || spawnPoints.Count == 0) return;
 
+      
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
 
-
+        
         GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
-        if (enemy.GetComponent<EnemyHealth>() == null)
-        {
-            Debug.LogWarning("Enemy does not have a health system!");
-        }
 
-        NetworkObject networkObject = enemy.GetComponent<NetworkObject>();
-        if (networkObject != null)
+        
+        if (enemy.TryGetComponent<NetworkObject>(out NetworkObject networkObject))
         {
-            networkObject.Spawn(); // Đong bo hoa đoi tuong voi client
-            
-            
+            networkObject.Spawn(); 
         }
         else
         {
-            Debug.LogError("Prefab of Enemy have not NetworkObject!");
-            
+            Debug.LogError("Prefab cua Enemy khong co NetworkObject!");
         }
-
     }
+
 }
+

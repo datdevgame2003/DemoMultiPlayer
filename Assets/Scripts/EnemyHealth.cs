@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class EnemyHealth : NetworkBehaviour
 {
     [SerializeField] private int maxHealth = 100;
-    private NetworkVariable<int> currentHealth = new NetworkVariable<int>(100);
+    private NetworkVariable<int> currentHealth = new NetworkVariable<int>(100, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField]
     GameObject ExplosionPrefab;
     [SerializeField] private Slider healthSlider;
@@ -15,10 +15,11 @@ public class EnemyHealth : NetworkBehaviour
         {
             currentHealth.Value = maxHealth;
         }
-
-        healthSlider.maxValue = maxHealth;
-        healthSlider.value = currentHealth.Value;
-
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth.Value;
+        }
         currentHealth.OnValueChanged += OnHealthChanged;
     }
 
@@ -36,16 +37,34 @@ public class EnemyHealth : NetworkBehaviour
         }
     }
 
-    // Hủy đối tượng khi chết
+  
     void Die()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.EnemyKilled();
+        }
         Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 
     private void OnHealthChanged(int oldHealth, int newHealth)
     {
-        healthSlider.value = newHealth;
+        if (healthSlider != null)
+        {
+            healthSlider.value = newHealth;
+        }
+        if (newHealth <= 0)
+        {
+            HandleDeathOnClient(); // die in client
+        }
     }
+    private void HandleDeathOnClient()
+    {
+        Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+        Destroy(gameObject);
+    }
+   
+    
 
 }

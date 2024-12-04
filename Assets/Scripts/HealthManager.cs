@@ -14,15 +14,16 @@ public class HealthManager : NetworkBehaviour
     GameObject ExplosionPrefab;
     private void Start()
     {
-        if (IsOwner)
+        if (IsServer)
         {
             currentHealth.Value = maxHealth;
         }
+        if (healthSlider != null) //neu co thanh mau thi mau hien tai = mau toi da
+        {
 
-        healthSlider.maxValue = maxHealth;
-        healthSlider.value = currentHealth.Value;
-
-
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth.Value;
+        }
     }
 
 
@@ -41,7 +42,7 @@ public class HealthManager : NetworkBehaviour
         currentHealth.Value -= damage;
         if (currentHealth.Value <= 0)
         {
-
+            GameManage.Instance.ShowGameOverUI();
             Die();
 
         }
@@ -55,7 +56,7 @@ public class HealthManager : NetworkBehaviour
     void Die()
     {
         GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
-
+       
         // Get the NetworkObject component attached to the explosion prefab
         NetworkObject networkObject = explosion.GetComponent<NetworkObject>();
         if (networkObject != null)
@@ -63,10 +64,13 @@ public class HealthManager : NetworkBehaviour
             // Spawn the effect so it gets synchronized across all clients
             networkObject.Spawn();
         }
-        GameManager.Instance.ShowGameOverUI();
+
+
         Destroy(gameObject);
 
     }
+  
+ 
 
     //public void Heal(int amount)
     //{
@@ -75,7 +79,7 @@ public class HealthManager : NetworkBehaviour
     //    currentHealth.Value += amount;
     //    currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
 
-    //    // ServerRpc:synchonize health -> server
+    //ServerRpc: synchonize health -> server
     //    UpdateHealthServerRpc(currentHealth.Value);
     //}
 

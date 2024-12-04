@@ -26,7 +26,7 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField]
     List<AudioClip> listAudios;
-    
+    [SerializeField] private int gold = 0;
 
     void Start()
     {
@@ -102,7 +102,13 @@ public class PlayerController : NetworkBehaviour
             }
         }
     }
-
+    public void AddGold(int amount)
+    {
+        gold += amount;
+        Debug.Log("Gold collected: " + gold);
+       
+    }
+  
     private void OnTriggerEnter2D(Collider2D otherhitbox)
     {
         if (otherhitbox.gameObject.tag == "ground")

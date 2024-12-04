@@ -9,6 +9,7 @@ public class EnemyHealth : NetworkBehaviour
     [SerializeField]
     GameObject ExplosionPrefab;
     [SerializeField] private Slider healthSlider;//thanh mau
+    [SerializeField] private EnemySpawner enemySpawner;
     private void Start()
     {
         if (IsServer)
@@ -34,27 +35,30 @@ public class EnemyHealth : NetworkBehaviour
 
         if (currentHealth.Value <= 0) // mau hien tai <= 0 thi enemy bi chet
         {
+            
             Die();
         }
     }
 
     //handle enemy die
-    void Die()
+    private void Die()
     {
-        if (GameManager.Instance != null)
+        if (GameManage.Instance != null)
         {
-            GameManager.Instance.EnemyKilled();
+            GameManage.Instance.EnemyKilled();
         }
         GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity); //hieu ung no khi chet
-
-        // Get the NetworkObject component attached to the explosion prefab
         NetworkObject networkObject = explosion.GetComponent<NetworkObject>();
         if (networkObject != null)
         {
             // Spawn the effect so it gets synchronized across all clients
             networkObject.Spawn();
         }
-
+        EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
+        if (spawner != null)
+        {
+            spawner.SpawnGold(transform.position); 
+        }
         GetComponent<NetworkObject>().Despawn(); //huy enemy
     }
     //update giao dien when health change

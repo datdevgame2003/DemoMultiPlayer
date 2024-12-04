@@ -3,17 +3,18 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class GameManager : NetworkBehaviour
+public class GameManage : NetworkBehaviour
 {
-    public static GameManager Instance; // Singleton:global management
-
+    public static GameManage Instance; // Singleton:global management
+   
     [Header("UI Components")]
     public TextMeshProUGUI enemyCountText;
     public GameObject winUI;
     public AudioSource winSound;
     public GameObject gameOverUI;
     public AudioSource gameOverSound;
-
+    [SerializeField] private TextMeshProUGUI goldText;
+    public GameObject player;
     [Header("Game Settings")]
     private const int enemiesToWin = 10;
 
@@ -21,8 +22,7 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<int> enemyKillCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> isWinUIActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> isLostUIActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    private GameObject player;
-  
+    
 
     private void Awake()
     {
@@ -59,6 +59,7 @@ public class GameManager : NetworkBehaviour
             enemyCountText.gameObject.SetActive(true);
         }
     }
+ 
 
     // Called when an enemy is killed
     public void EnemyKilled()
@@ -112,14 +113,15 @@ public class GameManager : NetworkBehaviour
         {
             winSound.Play();
             Time.timeScale = 0f;
+           
         }
     }
 
     public void ShowGameOverUI()
     {
         if (IsServer)
-        {
-            isWinUIActive.Value = true;
+        {  
+            isLostUIActive.Value = true;
         }
         
     }
@@ -130,6 +132,14 @@ public class GameManager : NetworkBehaviour
         {
             gameOverSound.Play();
             Time.timeScale = 0f;
+         
+        }
+    }
+    public void UpdateGoldUI(int goldCount)
+    {
+        if (goldText != null)
+        {
+            goldText.text = $"Gold: {goldCount}"; 
         }
     }
 
@@ -151,11 +161,6 @@ public class GameManager : NetworkBehaviour
         }
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //bat dau lai game va khoi tao lai thanh gia tri ban dau
-        var uiNetworkManager = FindObjectOfType<UINetworkManager>();
-        if (uiNetworkManager != null)
-        {
-            uiNetworkManager.gameObject.SetActive(true);
-
-        }
+       
     }
 }

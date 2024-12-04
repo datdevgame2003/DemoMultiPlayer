@@ -6,11 +6,11 @@ using System.Collections.Generic;
 public class EnemySpawner : NetworkBehaviour
 {
     [Header("Enemy Spawning Settings")]
-    [SerializeField] private GameObject enemyPrefab; 
+    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject goldPrefab;
     [SerializeField] private List<Transform> spawnPoints;  // tham chieu diem spawn
     [SerializeField] private float spawnInterval = 4f; //thoi gian moi lan spawn
     [SerializeField] private int maxEnemies = 20; //so luong spawn toi da
-
     private List<NetworkObject> activeEnemies = new List<NetworkObject>();  //danh sach enemies da spawn
     private float spawnTimer = 0f;
 
@@ -51,7 +51,18 @@ public class EnemySpawner : NetworkBehaviour
             Debug.LogError("Prefab cua enemy khong co NetworkObject!");
         }
     }
+    public void SpawnGold(Vector3 position)
+    {
+        if (!IsServer) return;
 
+       
+        GameObject gold = Instantiate(goldPrefab, position, Quaternion.identity);
+        NetworkObject networkObject = gold.GetComponent<NetworkObject>();
+        if (networkObject != null)
+        {
+            networkObject.Spawn();
+        }
+    }
     private void CleanUpDestroyedEnemies()
     {
         

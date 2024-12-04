@@ -5,8 +5,7 @@ using UnityEngine.UIElements;
 public class EnemyController : NetworkBehaviour
 {
     [SerializeField] private float movementSpeed = 2f;
-
-
+    [SerializeField] private EnemySpawner enemySpawner;
     private Rigidbody2D rb;
     [SerializeField]
     GameObject HitEffectPrefab;
@@ -31,7 +30,7 @@ public class EnemyController : NetworkBehaviour
     {
         if (!IsServer || target == null) //khong move tren server hoac khong co muc tieu
         {
-            return;
+            return; //chi kiem soat tren server
         }
         //move tren server va co muc tieu
         Vector3 direction = target.position - transform.position;
@@ -61,10 +60,9 @@ public class EnemyController : NetworkBehaviour
     }
 
     // Ham giam mau
-    void TakeDamage(int damage)
+    private void TakeDamage(int damage)
     {
-
-
+      
         if (TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
         {
             enemyHealth.TakeDamage(damage);

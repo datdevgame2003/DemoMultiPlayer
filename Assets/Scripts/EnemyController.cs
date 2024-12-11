@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 public class EnemyController : NetworkBehaviour
 {
     [SerializeField] private float movementSpeed = 2f;
-    [SerializeField] private EnemySpawner enemySpawner;
+   
     private Rigidbody2D rb;
     [SerializeField]
     GameObject HitEffectPrefab;

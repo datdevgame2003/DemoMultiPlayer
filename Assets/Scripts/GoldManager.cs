@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GoldManager : NetworkBehaviour
 {
-    private NetworkVariable<int> goldCount = new NetworkVariable<int>(0); // Biến mạng lưu số lượng vàng
+    private NetworkVariable<int> goldCount = new NetworkVariable<int>(0); // Bien mang luu so luong vang
 
     public static GoldManager Instance;
 
@@ -24,7 +24,7 @@ public class GoldManager : NetworkBehaviour
         if (!IsServer) return;
 
         goldCount.Value += amount;//tang vang
-        UpdateGoldUIClientRpc(goldCount.Value); // Cập nhật giao diện UI cho tất cả client
+        UpdateGoldUIClientRpc(goldCount.Value); // Cap nhat giao dien UI cho tat ca client
     }
 
     [ClientRpc]

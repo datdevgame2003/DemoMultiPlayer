@@ -12,6 +12,9 @@ public class HealthManager : NetworkBehaviour
     private NetworkVariable<int> currentHealth = new NetworkVariable<int>(100); //synchornize health giua server va client
     [SerializeField]
     GameObject ExplosionPrefab;
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip hitSound; 
+    private AudioSource audioSource;
     private void Start()
     {
         if (IsServer)
@@ -24,6 +27,13 @@ public class HealthManager : NetworkBehaviour
             healthSlider.maxValue = maxHealth;
             healthSlider.value = currentHealth.Value;
         }
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false;
     }
 
 
@@ -40,6 +50,7 @@ public class HealthManager : NetworkBehaviour
         if (!IsServer) return;
 
         currentHealth.Value -= damage;
+        PlayHitSound();
         if (currentHealth.Value <= 0)
         {
             GameManage.Instance.ShowGameOverUI();
@@ -69,22 +80,9 @@ public class HealthManager : NetworkBehaviour
         Destroy(gameObject);
 
     }
-  
- 
 
-    //public void Heal(int amount)
-    //{
-    //    if (!IsOwner) return;
-
-    //    currentHealth.Value += amount;
-    //    currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
-
-    //ServerRpc: synchonize health -> server
-    //    UpdateHealthServerRpc(currentHealth.Value);
-    //}
-
-    // ServerRpc:update health client->server
-    [ServerRpc]
+        // ServerRpc:update health client->server
+        [ServerRpc]
     private void UpdateHealthServerRpc(int newHealth)
     {
         currentHealth.Value = newHealth;
@@ -96,6 +94,15 @@ public class HealthManager : NetworkBehaviour
     private void UpdateHealthClientRpc(int newHealth)
     {
         healthSlider.value = newHealth; // update healthbar -> diffirent client
+    }
+
+   
+    private void PlayHitSound()
+    {
+        if (hitSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(hitSound); 
+        }
     }
 
 }

@@ -165,6 +165,7 @@ public class PlayerController : NetworkBehaviour
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
         Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
         bullet.GetComponent<BulletController>().SetDirection(shootDirection);
+        shootingSound.clip = listAudios[0];
         shootingSound.Play();
         Destroy(bullet, 1.5f);
     }

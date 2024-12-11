@@ -9,7 +9,9 @@ public class EnemyHealth : NetworkBehaviour
     [SerializeField]
     GameObject ExplosionPrefab;
     [SerializeField] private Slider healthSlider;//thanh mau
-    [SerializeField] private EnemySpawner enemySpawner;
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip explosionSound;
+    private AudioSource audioSource;
     private void Start()
     {
         if (IsServer)
@@ -23,6 +25,14 @@ public class EnemyHealth : NetworkBehaviour
         }
         //update healthbar when value is change
         currentHealth.OnValueChanged += OnHealthChanged;
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false;
     }
 
 
@@ -35,7 +45,7 @@ public class EnemyHealth : NetworkBehaviour
 
         if (currentHealth.Value <= 0) // mau hien tai <= 0 thi enemy bi chet
         {
-            
+            PlayExplosionSoundClientRpc();
             Die();
         }
     }
@@ -47,12 +57,12 @@ public class EnemyHealth : NetworkBehaviour
         {
             GameManage.Instance.EnemyKilled();
         }
+      
         GameObject explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity); //hieu ung no khi chet
         NetworkObject networkObject = explosion.GetComponent<NetworkObject>();
         if (networkObject != null)
         {
-            // Spawn the effect so it gets synchronized across all clients
-            networkObject.Spawn();
+            networkObject.Spawn();//Spawn the effect so it gets synchronized across all clients
         }
         EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
         if (spawner != null)
@@ -87,7 +97,14 @@ public class EnemyHealth : NetworkBehaviour
 
         Destroy(gameObject);
     }
-
+    [ClientRpc]
+    private void PlayExplosionSoundClientRpc()
+    {
+        if (explosionSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(explosionSound);
+        }
+    }
 
 
 }

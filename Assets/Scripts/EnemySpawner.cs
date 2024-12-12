@@ -53,7 +53,7 @@ public class EnemySpawner : NetworkBehaviour
     }
     public void SpawnGold(Vector3 position)
     {
-        if (!IsServer) return;
+        if (!IsServer) return; //chi server moi spawn
 
        
         GameObject gold = Instantiate(goldPrefab, position, Quaternion.identity);
@@ -63,7 +63,7 @@ public class EnemySpawner : NetworkBehaviour
             networkObject.Spawn();
         }
     }
-    private void CleanUpDestroyedEnemies()
+    private void CleanUpDestroyedEnemies() //xoa cac quai da bi chet khoi danh sach
     {
         
         activeEnemies.RemoveAll(enemy => enemy == null || !enemy.gameObject.activeInHierarchy);

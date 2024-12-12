@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : NetworkBehaviour
 {
-    public float moveSpeed = 2.5f;
+    public float moveSpeed = 4f;
     private Vector3 otherPos;
     public bool isFacingRight = true;
     public float left_right;
@@ -51,16 +51,16 @@ public class PlayerController : NetworkBehaviour
             // jump
             if (Input.GetKeyDown(KeyCode.Space) && allowJump)
             {
-                RequestJumpServerRpc(); // jump -> server
+                RequestJumpServerRpc(); // jump -> server(yeu cau player nhay tu client)
             }
 
             // shoot
             if (Input.GetButtonDown("Fire2"))
             {
-                RequestShootServerRpc(isFacingRight); // shoot -> server
+                RequestShootServerRpc(isFacingRight); // shoot -> server(player ban tu client)
             }
 
-            // Dong bo vị trí va trang thai flip len Server
+            // Dong bo vị trí va trang thai flip client len Server
             if (NetworkManager.Singleton.IsClient)
             {
                 SyncPlayerPosServerRpc(transform.position, isFacingRight, move);
@@ -68,7 +68,7 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            // Nhan vi tri va trang thai flip tu Server (cho cac client)
+            // Nhan vi tri va flip tu Server (cho cac client)
             transform.position = otherPos;
             anim.SetFloat("move", move);
             flip();
@@ -78,7 +78,7 @@ public class PlayerController : NetworkBehaviour
    
     void flip()
     {
-        if (IsOwner)
+        if (IsOwner) //kiem tra chu so huu cua client ,dao nguoc vertical cua nhan vat khi thay doi
         {
             if (isFacingRight && left_right < 0 || !isFacingRight && left_right > 0)
             {
@@ -90,7 +90,7 @@ public class PlayerController : NetworkBehaviour
                
             }
         }
-        else
+        else //cap nhat chieu rong nhan vat tu server
         {
             if (isFacingRight)
             {
@@ -102,7 +102,7 @@ public class PlayerController : NetworkBehaviour
             }
         }
     }
-    public void AddGold(int amount)
+    public void AddGold(int amount) //them vang trong tong vang
     {
         gold += amount;
         Debug.Log("Gold collected: " + gold);
@@ -133,7 +133,7 @@ public class PlayerController : NetworkBehaviour
         isFacingRight = facingRight;
         this.move = move;
 
-        // Sau khi đong bo tu client, goi ClientRpc đe cap nhat cac client khac
+        // Sau khi đong bo tu client, ClientRpc cap nhat tu server cho cac client khac
         SyncPlayerPosClientRpc(pos, facingRight, move);
     }
 
@@ -153,13 +153,13 @@ public class PlayerController : NetworkBehaviour
 
     
     [ServerRpc(RequireOwnership = false)]
-    void RequestShootServerRpc(bool facingRight)
+    void RequestShootServerRpc(bool facingRight) //goi shoot tu client
     {
         ShootClientRpc(facingRight);
     }
 
     [ClientRpc]
-    void ShootClientRpc(bool facingRight)
+    void ShootClientRpc(bool facingRight) //cap nhat trang thai cua client
     {
         
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
@@ -172,9 +172,9 @@ public class PlayerController : NetworkBehaviour
 
     
     [ServerRpc]
-    void RequestJumpServerRpc()
+    void RequestJumpServerRpc() //yeu cau nhay tu client
     {
-        JumpClientRpc(); 
+        JumpClientRpc(); //can jump
     }
 
     
@@ -183,7 +183,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (allowJump)
         {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse); //luc nhay
             allowJump = false; // không bi nhay lien tuc
         }
     }

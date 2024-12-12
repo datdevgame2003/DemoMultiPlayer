@@ -7,13 +7,13 @@ using Unity.Collections;
 
 public class PlayerSettings : NetworkBehaviour
 {
-    [SerializeField] private TextMeshProUGUI playerName;
-    [SerializeField] private Transform textHolder;
-
+    [SerializeField] private TextMeshProUGUI playerName; //hien thi player name
+    [SerializeField] private Transform textHolder;//vi tri ten
+    //bien mang luu player name
     private NetworkVariable<FixedString128Bytes> networkPlayerName = new NetworkVariable<FixedString128Bytes>(
         "Player: 0",
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
+        NetworkVariableReadPermission.Everyone, //clients doc ten
+        NetworkVariableWritePermission.Server   //server ghi ten
     );
 
     public override void OnNetworkSpawn()
@@ -21,16 +21,16 @@ public class PlayerSettings : NetworkBehaviour
         if (IsServer)
         {
             // Server gan ten cho nguoi choi
-            networkPlayerName.Value = "Player: " + (OwnerClientId + 1);
+            networkPlayerName.Value = "Player: " + (OwnerClientId + 1); //gan ten theo id player
         }
 
         // UI hien thi tên
-        playerName.text = networkPlayerName.Value.ToString();
+        playerName.text = networkPlayerName.Value.ToString(); //gan ten
 
-        networkPlayerName.OnValueChanged += OnPlayerNameChanged;
+        networkPlayerName.OnValueChanged += OnPlayerNameChanged; //cap nhat ten
     }
 
-    private void OnPlayerNameChanged(FixedString128Bytes previous, FixedString128Bytes current)
+    private void OnPlayerNameChanged(FixedString128Bytes previous, FixedString128Bytes current) //cap nhat ten
     {
         playerName.text = current.ToString();
     }

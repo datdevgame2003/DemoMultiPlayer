@@ -7,7 +7,7 @@ public class GoldManager : NetworkBehaviour
 
     public static GoldManager Instance;
 
-    private void Awake()
+    private void Awake() //tranh tao ra nhieu instance,chi co 1 instance 
     {
         if (Instance == null)
         {
@@ -23,14 +23,14 @@ public class GoldManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        goldCount.Value += amount;//tang vang
+        goldCount.Value += amount;//tang vang tren server
         UpdateGoldUIClientRpc(goldCount.Value); // Cap nhat giao dien UI cho tat ca client
     }
 
     [ClientRpc]
-    private void UpdateGoldUIClientRpc(int newGoldCount)
+    private void UpdateGoldUIClientRpc(int newGoldCount) //dc goi tu server,dong bo den clients khi thay doi tren server
     {
-        GameManage.Instance.UpdateGoldUI(newGoldCount);
+        GameManage.Instance.UpdateGoldUI(newGoldCount); //cap nhat gia tri vang moi
     }
 }
 

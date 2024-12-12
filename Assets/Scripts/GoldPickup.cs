@@ -17,14 +17,14 @@ public class GoldPickup : NetworkBehaviour
         {
             if (IsServer)
             {
-                PlayPickupSoundClientRpc();
-                GoldManager.Instance.AddGold(goldValue);
-                NetworkObject.Despawn(); 
+                PlayPickupSoundClientRpc();//am thanh -> all clients
+                GoldManager.Instance.AddGold(goldValue);//update gold
+                NetworkObject.Despawn(); //xoa vang sau khi nhat
             }
         }
     }
     [ClientRpc]
-    private void PlayPickupSoundClientRpc()
+    private void PlayPickupSoundClientRpc() //goi tu server phat am thanh -> all clients
     {
   
         coinSound.Play();

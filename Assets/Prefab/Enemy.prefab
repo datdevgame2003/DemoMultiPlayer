@@ -183,8 +183,8 @@ Transform:
   m_GameObject: {fileID: 1366271968119142182}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.99997, y: -6.00003, z: 0}
-  m_LocalScale: {x: 5.6095467, y: 6.5, z: 6.5}
+  m_LocalPosition: {x: 4.8238, y: -6.00003, z: 0}
+  m_LocalScale: {x: 4.394497, y: 6.5, z: 6.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 804186400744006434}
@@ -299,7 +299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3065802553
+  GlobalObjectIdHash: 2617502732
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -341,7 +341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d77211a602241aa448f03c7e74b46142, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 3.5
+  movementSpeed: 1.5
   HitEffectPrefab: {fileID: 2708598583397607911, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
 --- !u!50 &3236343110658740955
 Rigidbody2D:

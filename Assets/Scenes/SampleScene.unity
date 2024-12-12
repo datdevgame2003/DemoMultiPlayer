@@ -2139,8 +2139,8 @@ MonoBehaviour:
   - {fileID: 348657703}
   - {fileID: 1308883377}
   - {fileID: 1988805780}
-  spawnInterval: 5
-  maxEnemies: 20
+  spawnInterval: 4
+  maxEnemies: 100
 --- !u!4 &833867590
 Transform:
   m_ObjectHideFlags: 0
@@ -2551,6 +2551,7 @@ MonoBehaviour:
   gameOverUI: {fileID: 246591163}
   gameOverSound: {fileID: 246591167}
   goldText: {fileID: 1777514097}
+  player: {fileID: 7482856280685760509, guid: 1d76bac13f46da248a523d1ccbec8b55, type: 3}
   enemy: {fileID: 1366271968119142182, guid: 99eea1dbe63fb6f4293c0f7c564e87b8, type: 3}
 --- !u!114 &1318770949
 MonoBehaviour:

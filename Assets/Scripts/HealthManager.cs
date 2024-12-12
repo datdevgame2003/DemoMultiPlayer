@@ -1,6 +1,4 @@
 ﻿
-
-
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +16,7 @@ public class HealthManager : NetworkBehaviour
     public GameObject enemy;
     private void Start()
     {
-        if (IsServer)
+        if (IsServer) //kiem tra chay tren server
         {
             currentHealth.Value = maxHealth;
         }
@@ -42,7 +40,7 @@ public class HealthManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            healthSlider.value = currentHealth.Value;
+            healthSlider.value = currentHealth.Value; //cap nhat gia tri thanh mau voi health present,dong bo voi clients
         }
     }
 
@@ -74,27 +72,26 @@ public class HealthManager : NetworkBehaviour
         if (networkObject != null)
         {
             // Spawn the effect so it gets synchronized across all clients
-            networkObject.Spawn();
+            networkObject.Spawn();//dong bo hieu ung no giua cac client
         }
-
 
         Destroy(gameObject);
 
     }
 
-        // ServerRpc:update health client->server
+        // ServerRpc:goi tu server to update health player
         [ServerRpc]
     private void UpdateHealthServerRpc(int newHealth)
     {
         currentHealth.Value = newHealth;
-        UpdateHealthClientRpc(newHealth);
+        UpdateHealthClientRpc(newHealth);//dong bo mau ->clients
     }
 
-    // ClientRpc :update health -> clients
+    // ClientRpc :goi tu server to update health -> clients
     [ClientRpc]
     private void UpdateHealthClientRpc(int newHealth)
     {
-        healthSlider.value = newHealth; // update healthbar -> diffirent client
+        healthSlider.value = newHealth; // update healthbar -> diffirent clients
     }
 
    

@@ -16,13 +16,14 @@ public class GameManage : NetworkBehaviour
     public AudioSource gameOverSound;
     [SerializeField] private TextMeshProUGUI goldText;
     [Header("Game Settings")]
-    private const int enemiesToWin = 50;
+    private const int enemiesToWin = 30;
     // NetworkVariable to sync values
     private NetworkVariable<int> enemyKillCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<int> goldCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> isWinUIActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> isLostUIActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> isPaused = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public GameObject player;
     public GameObject enemy;
     private void Awake()
     {
@@ -74,29 +75,30 @@ public class GameManage : NetworkBehaviour
 
         if (enemyKillCount.Value >= enemiesToWin)
         {
+            Destroy(player);
             Destroy(enemy);
             ShowWinUI();
         }
     }
 
-    private void UpdateEnemyCountUI()
+    private void UpdateEnemyCountUI()//cap nhat ui enemy killed va dong bo den all client
     {
         enemyCountText.text = "Enemies Killed: " + enemyKillCount.Value;
         UpdateEnemyCountClientRpc(enemyKillCount.Value);
     }
 
     [ClientRpc]
-    private void UpdateEnemyCountClientRpc(int count)
+    private void UpdateEnemyCountClientRpc(int count) 
     {
         enemyCountText.text = "Enemies Killed: " + count;
     }
 
-    [ServerRpc]
+    [ServerRpc]//goi tu server
     public void AddGoldServerRpc(int amount)
     {
         if (!IsServer) return;
         goldCount.Value += amount;
-        UpdateGoldUIClientRpc(goldCount.Value);
+        UpdateGoldUIClientRpc(goldCount.Value);//update ui vang -> all clients
     }
 
     [ClientRpc]
@@ -149,15 +151,17 @@ public class GameManage : NetworkBehaviour
         }
     }
     [ServerRpc]
-    public void PauseGameServerRpc()
+    public void PauseGameServerRpc() //update pause -> all clients
     {
-        isPaused.Value = true;
+        isPaused.Value = true; //update pause game
+        PauseGameClientRpc();
     }
 
     [ServerRpc]
     public void ResumeGameServerRpc()
     {
         isPaused.Value = false;
+        ResumeGameClientRpc();
     }
 
     private void OnPauseStateChanged(bool oldValue, bool newValue)
@@ -170,6 +174,17 @@ public class GameManage : NetworkBehaviour
         {
             ResumeGame();
         }
+    }
+    [ClientRpc]
+    private void PauseGameClientRpc()
+    {
+        Time.timeScale = 0f;
+    }
+
+    [ClientRpc]
+    private void ResumeGameClientRpc()
+    {
+        Time.timeScale = 1f;
     }
     private void PauseGame()
     {

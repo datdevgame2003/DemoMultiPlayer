@@ -99,7 +99,7 @@ public class EnemyHealth : NetworkBehaviour
         Destroy(gameObject);
     }
     [ClientRpc]
-    private void PlayExplosionSoundClientRpc()
+    private void PlayExplosionSoundClientRpc() //am thanh no tren all clients
     {
         if (explosionSound != null && audioSource != null)
         {

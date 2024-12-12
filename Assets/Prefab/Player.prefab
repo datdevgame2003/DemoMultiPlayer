@@ -867,11 +867,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c2379523a7b08146bb7e0ffc2dfd51e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2.5
+  moveSpeed: 4
   isFacingRight: 1
   left_right: 0
   allowJump: 0
-  jumpForce: 8
+  jumpForce: 9.5
   firePoint: {fileID: 6362533630359898288}
   bulletPrefab: {fileID: 1735193323515338189, guid: ce03fe4cd68d9f4419d2aec3f1d6f6ba, type: 3}
   bulletSpeed: 9

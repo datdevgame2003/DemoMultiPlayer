@@ -10,7 +10,7 @@ public class EnemySpawner : NetworkBehaviour
     [SerializeField] private GameObject goldPrefab;
     [SerializeField] private List<Transform> spawnPoints;  // tham chieu diem spawn
     [SerializeField] private float spawnInterval = 4f; //thoi gian moi lan spawn
-    [SerializeField] private int maxEnemies = 20; //so luong spawn toi da
+    [SerializeField] private int maxEnemies = 50; //so luong spawn toi da
     private List<NetworkObject> activeEnemies = new List<NetworkObject>();  //danh sach enemies da spawn
     private float spawnTimer = 0f;
 

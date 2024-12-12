@@ -41,11 +41,12 @@ public class EnemyHealth : NetworkBehaviour
         if (!IsServer) return; //server only manage damage
 
         currentHealth.Value -= damage; //tru mau theo dame
+        PlayExplosionSoundClientRpc();
         currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);//0 - 100
 
         if (currentHealth.Value <= 0) // mau hien tai <= 0 thi enemy bi chet
         {
-            PlayExplosionSoundClientRpc();
+            
             Die();
         }
     }

@@ -15,6 +15,7 @@ public class HealthManager : NetworkBehaviour
     [Header("Audio Settings")]
     [SerializeField] private AudioClip hitSound; 
     private AudioSource audioSource;
+    public GameObject enemy;
     private void Start()
     {
         if (IsServer)
@@ -55,7 +56,7 @@ public class HealthManager : NetworkBehaviour
         {
             GameManage.Instance.ShowGameOverUI();
             Die();
-
+            Destroy(enemy);
         }
         currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
 

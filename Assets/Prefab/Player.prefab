@@ -1122,6 +1122,7 @@ MonoBehaviour:
   maxHealth: 100
   ExplosionPrefab: {fileID: 8791802859087666345, guid: ae07f2a45f14a82428409cfe410e6002, type: 3}
   hitSound: {fileID: 8300000, guid: 07104df35f2c7c944a759037ac31c309, type: 3}
+  enemy: {fileID: 1366271968119142182, guid: 99eea1dbe63fb6f4293c0f7c564e87b8, type: 3}
 --- !u!114 &8795141623706889735
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,11 +2,12 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManage : NetworkBehaviour
 {
-    public static GameManage Instance; // Singleton:global management
-   
+    public static GameManage Instance; // Singleton
+
     [Header("UI Components")]
     public TextMeshProUGUI enemyCountText;
     public GameObject winUI;
@@ -14,19 +15,17 @@ public class GameManage : NetworkBehaviour
     public GameObject gameOverUI;
     public AudioSource gameOverSound;
     [SerializeField] private TextMeshProUGUI goldText;
-    public GameObject player;
     [Header("Game Settings")]
-    private const int enemiesToWin = 10;
-
-    // NetworkVariable to sync enemy kill count
+    private const int enemiesToWin = 50;
+    // NetworkVariable to sync values
     private NetworkVariable<int> enemyKillCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<int> goldCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> isWinUIActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> isLostUIActive = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    
-
+    private NetworkVariable<bool> isPaused = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public GameObject enemy;
     private void Awake()
     {
-        // Singleton
         if (Instance == null)
         {
             Instance = this;
@@ -40,72 +39,80 @@ public class GameManage : NetworkBehaviour
     private void Start()
     {
         winUI.SetActive(false);
-        isWinUIActive.OnValueChanged += OnWinUIStateChanged;
-        isLostUIActive.OnValueChanged += OnLostUIStateChanged;
         gameOverUI.SetActive(false);
         enemyCountText.gameObject.SetActive(false);
+
+        isWinUIActive.OnValueChanged += OnWinUIStateChanged;
+        isLostUIActive.OnValueChanged += OnLostUIStateChanged;
+        isPaused.OnValueChanged += OnPauseStateChanged;
         UpdateEnemyCountUI();
+        UpdateGoldUI(goldCount.Value);
     }
 
     private void Update()
     {
-        if (player == null)
-        {
-            player = GameObject.FindWithTag("Player"); //tim tag player
-        }
-
-        if (player != null && !enemyCountText.gameObject.activeSelf)
+        if (!enemyCountText.gameObject.activeSelf)
         {
             enemyCountText.gameObject.SetActive(true);
         }
+        if (isPaused.Value)
+        {
+            PauseGame();
+        }
+        else
+        {
+            ResumeGame();
+        }
     }
- 
 
-    // Called when an enemy is killed
     public void EnemyKilled()
     {
-        // Only the server can update the NetworkVariable
         if (!IsServer) return;
 
-        enemyKillCount.Value++; //tang so luong enemy da kill
+        enemyKillCount.Value++;
         UpdateEnemyCountUI();
 
-        // Check if the player has won
-        if (enemyKillCount.Value >= enemiesToWin) // kill > 20 enemies -> win
+        if (enemyKillCount.Value >= enemiesToWin)
         {
+            Destroy(enemy);
             ShowWinUI();
         }
     }
 
     private void UpdateEnemyCountUI()
     {
-        // Sync the value with clients
-        if (enemyCountText != null)
-        {
-            enemyCountText.text = "Enemies Killed: " + enemyKillCount.Value;
-        }
-
-        // Notify all clients about the updated kill count
+        enemyCountText.text = "Enemies Killed: " + enemyKillCount.Value;
         UpdateEnemyCountClientRpc(enemyKillCount.Value);
     }
 
     [ClientRpc]
-    private void UpdateEnemyCountClientRpc(int killCount)
+    private void UpdateEnemyCountClientRpc(int count)
     {
-        // Update the enemy count UI on all clients
-        if (enemyCountText != null)
-        {
-            enemyCountText.text = "Enemies Killed: " + killCount;
-        }
+        enemyCountText.text = "Enemies Killed: " + count;
+    }
+
+    [ServerRpc]
+    public void AddGoldServerRpc(int amount)
+    {
+        if (!IsServer) return;
+        goldCount.Value += amount;
+        UpdateGoldUIClientRpc(goldCount.Value);
+    }
+
+    [ClientRpc]
+    private void UpdateGoldUIClientRpc(int count)
+    {
+        UpdateGoldUI(count);
     }
 
     private void ShowWinUI()
     {
-        if (IsServer) 
+        if (IsServer)
         {
             isWinUIActive.Value = true;
         }
     }
+
     private void OnWinUIStateChanged(bool oldValue, bool newValue)
     {
         winUI.SetActive(newValue);
@@ -113,18 +120,17 @@ public class GameManage : NetworkBehaviour
         {
             winSound.Play();
             Time.timeScale = 0f;
-           
         }
     }
 
     public void ShowGameOverUI()
     {
         if (IsServer)
-        {  
+        {
             isLostUIActive.Value = true;
         }
-        
     }
+
     private void OnLostUIStateChanged(bool oldValue, bool newValue)
     {
         gameOverUI.SetActive(newValue);
@@ -132,35 +138,76 @@ public class GameManage : NetworkBehaviour
         {
             gameOverSound.Play();
             Time.timeScale = 0f;
-         
         }
     }
-    public void UpdateGoldUI(int goldCount)
+
+    public void UpdateGoldUI(int count)
     {
         if (goldText != null)
         {
-            goldText.text = $"Gold: {goldCount}"; 
+            goldText.text = $"Gold: {count}";
         }
     }
+    [ServerRpc]
+    public void PauseGameServerRpc()
+    {
+        isPaused.Value = true;
+    }
 
-    public void RestartGame()
+    [ServerRpc]
+    public void ResumeGameServerRpc()
+    {
+        isPaused.Value = false;
+    }
+
+    private void OnPauseStateChanged(bool oldValue, bool newValue)
+    {
+        if (newValue)
+        {
+            PauseGame();
+        }
+        else
+        {
+            ResumeGame();
+        }
+    }
+    private void PauseGame()
+    {
+        Time.timeScale = 0f;
+    }
+
+    private void ResumeGame()
     {
         Time.timeScale = 1f;
-        enemyKillCount.Value = 0;
-        UpdateEnemyCountUI();
-        winUI.SetActive(false);
-        gameOverUI.SetActive(false);
-        //tat tro choi
-        if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost)
-        {
-            NetworkManager.Singleton.Shutdown();
-        }
-        else if (NetworkManager.Singleton.IsClient)
-        {
-            NetworkManager.Singleton.Shutdown();
-        }
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //bat dau lai game va khoi tao lai thanh gia tri ban dau
-       
     }
+
+
+    //public void Restart()
+    //{
+    //    if (!IsServer) return;
+
+    //    // Reset all values
+    //    enemyKillCount.Value = 0;
+    //    goldCount.Value = 0;
+    //    isWinUIActive.Value = false;
+    //    isLostUIActive.Value = false;
+
+    //    // Notify clients to reset UI
+    //    ResetClientRpc();
+    //    NetworkManager.Singleton.Shutdown();
+    //    SceneManager.LoadScene("SampleScene");
+    //    // Reload the scene
+    //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    //}
+
+    //[ClientRpc]
+    //private void ResetClientRpc()
+    //{
+    //    // Reset UI and values on clients
+    //    winUI.SetActive(false);
+    //    gameOverUI.SetActive(false);
+    //    Time.timeScale = 1f;
+    //    UpdateEnemyCountUI();
+    //    UpdateGoldUI(0);
+    //}
 }

@@ -18,4 +18,10 @@ public class Menu : MonoBehaviour
         SceneManager.LoadScene("SampleScene");
 
     }
+    public void ExitGame()
+    {
+        clickButtonSound.Play();
+        Application.Quit();
+    }
+
 }
